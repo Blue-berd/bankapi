@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="position-absolute top-50 start-50 translate-middle">
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid" class="ui-widget">
+            <form id="search" method="GET" action="{% url 'api:api-root' %}bankdetailapi/?q=">
+                <!-- {% csrf_token %} -->
+                <p>Enter IFSC code</p>
+                <input type="text" class="form-control" id="q" name="q" placeholder="Type & Enter">
+                <!-- <button type="submit" class="btn btn-default btn-submit">Submit</button> -->
+            </form>
+        </div>
+    </nav>
+</div>
+
+<script type='text/javascript'>
+    $(document).ready(function () {
+        $("#q").keyup(function () {
+            var value = $('#q').val()
+            $.getJSON("{% url 'api:api-root' %}" + "bankdetailapi/?q=" + value, function (data) {
+                var text = []
+                // console.log(text)
+                for (var i = 0; i < 5; ++i) { text.push(data.results[i].ifsc) }
+                if (document.getElementById("q").value.length == 0) { text = [] }
+                
+
+                $("#q").autocomplete({
+                    source: text,
+                    minLength: 0,
+                    delay: 500,
+                });
+
+            })
+        })
+    })
+</script>
+{% endblock %}
